@@ -100,10 +100,8 @@ _proot-distro_completions() {
 			done < <(compgen -A file -A directory -- "$cur")
 			;;
 
-		help*)
-			while read -r; do
-				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "" -- "$cur")")
+		-h*|--help*|help*|list*)
+			:
 			;;
 
 		backup*)
@@ -116,12 +114,6 @@ _proot-distro_completions() {
 			while read -r; do
 				COMPREPLY+=("$REPLY")
 			done < <(compgen -W "$(_proot-distro_completions_filter "--help --override-alias $(_proot-distro_completions_list)" "--override-alias")" -- "$cur")
-			;;
-
-		list*)
-			while read -r; do
-				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "" -- "$cur")")
 			;;
 
 		login*)
@@ -157,7 +149,7 @@ _proot-distro_completions() {
 		*)
 			while read -r; do
 				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "--help help backup install list login remove reset restore")" -- "$cur")
+			done < <(compgen -W "$(_proot-distro_completions_filter "-h --help help backup install list login remove reset restore")" -- "$cur")
 			;;
 	esac
 }
