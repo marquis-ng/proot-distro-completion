@@ -2,12 +2,34 @@
 
 _proot-distro_completions_filter() {
 	local words="$1"
+	local optargs="${2:-}"
+	local optcount=0
+	local optend=false
 	local cur=${COMP_WORDS[COMP_CWORD]}
 	local result=()
 
+	set -- "${COMP_WORDS[@]:1:$COMP_CWORD-1}"
+	while [ "$#" != 0 ]; do
+		case "$1" in
+			--*)
+				if echo "$1" | grep -qEx -- "$optargs"; then
+					if [ -n "$2" ]; then
+						shift
+					else
+						optend=true
+					fi
+				fi
+				;;
+			*)
+				((++optcount))
+				;;
+		esac
+		shift
+	done
+
 	if [ "${cur:0:1}" = "-" ]; then
 		echo "$words"
-	else
+	elif [ "$optcount" -lt 2 ] || [ "$optend" = "true" ]; then
 		for word in $words; do
 			[ "${word:0:1}" != "-" ] && result+=("$word")
 		done
@@ -26,7 +48,7 @@ _proot-distro_completions_list_installed() {
 }
 
 _proot-distro_completions_list_users() {
-	shift
+	set -- "${COMP_WORDS[@]:2:$COMP_CWORD-1}"
 	while [ "$#" != 0 ]; do
 		case "$1" in
 			--*)
@@ -63,13 +85,13 @@ _proot-distro_completions() {
 		install*--override-alias)
 			while read -r; do
 				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "$(_proot-distro_completions_list)")" -- "$cur")
+			done < <(compgen -W "$(_proot-distro_completions_filter "$(_proot-distro_completions_list)" "--override-alias")" -- "$cur")
 			;;
 
 		login*--user)
 			while read -r; do
 				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "$(_proot-distro_completions_list_users "${compwords[@]}")")" -- "$cur")
+			done < <(compgen -W "$(_proot-distro_completions_filter "$(_proot-distro_completions_list_users)" "--user|--bind")" -- "$cur")
 			;;
 
 		login*--bind)
@@ -87,13 +109,13 @@ _proot-distro_completions() {
 		backup*)
 			while read -r; do
 				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "--help --output $(_proot-distro_completions_list_installed)")" -- "$cur")
+			done < <(compgen -W "$(_proot-distro_completions_filter "--help --output $(_proot-distro_completions_list_installed)" "--backup")" -- "$cur")
 			;;
 
 		install*)
 			while read -r; do
 				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "--help --override-alias $(_proot-distro_completions_list)")" -- "$cur")
+			done < <(compgen -W "$(_proot-distro_completions_filter "--help --override-alias $(_proot-distro_completions_list)" "--override-alias")" -- "$cur")
 			;;
 
 		list*)
@@ -105,7 +127,7 @@ _proot-distro_completions() {
 		login*)
 			while read -r; do
 				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "--help --user --fix-low-ports --isolated --termux-home --shared-tmp --bind --no-link2symlink --no-sysvipc --no-kill-on-exit $(_proot-distro_completions_list_installed)")" -- "$cur")
+			done < <(compgen -W "$(_proot-distro_completions_filter "--help --user --fix-low-ports --isolated --termux-home --shared-tmp --bind --no-link2symlink --no-sysvipc --no-kill-on-exit $(_proot-distro_completions_list_installed)" "--user|--bind")" -- "$cur")
 			;;
 
 		remove*)
