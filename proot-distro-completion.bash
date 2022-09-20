@@ -154,7 +154,11 @@ _proot-distro_completions() {
 	esac
 }
 
-complete -F _proot-distro_completions proot-distro
-if command -v pd > /dev/null && [ "$(basename -- "$(realpath -- "$(command -v pd)")")" = "proot-distro" ]; then
-	complete -F _proot-distro_completions pd
+if command -v proot-distro > /dev/null; then
+	complete -F _proot-distro_completions proot-distro
+	if command -v pd > /dev/null && [ "$(basename -- "$(realpath -- "$(command -v pd)")")" = "proot-distro" ]; then
+		complete -F _proot-distro_completions pd
+	fi
+else
+	unset $(declare -F | awk "\$3~\"^_proot-distro\" {printf(\"%s\n\", \$3)}")
 fi
