@@ -1,5 +1,9 @@
 # completion for proot-distro made by marquis-ng
 
+if ! command -v proot-distro > /dev/null; then
+	return
+fi
+
 _proot-distro_completions_filter() {
 	local words="$1"
 	local optargs="${2:-}"
@@ -154,11 +158,7 @@ _proot-distro_completions() {
 	esac
 }
 
-if command -v proot-distro > /dev/null; then
-	complete -F _proot-distro_completions proot-distro
-	if command -v pd > /dev/null && [ "$(basename -- "$(realpath -- "$(command -v pd)")")" = "proot-distro" ]; then
-		complete -F _proot-distro_completions pd
-	fi
-else
-	unset $(declare -F | awk "\$3~\"^_proot-distro_completions\" {printf(\"%s\n\", \$3)}")
+complete -F _proot-distro_completions proot-distro
+if command -v pd > /dev/null && [ "$(basename -- "$(realpath -- "$(command -v pd)")")" = "proot-distro" ]; then
+	complete -F _proot-distro_completions pd
 fi
