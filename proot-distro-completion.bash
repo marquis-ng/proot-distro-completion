@@ -160,5 +160,5 @@ if command -v proot-distro > /dev/null; then
 		complete -F _proot-distro_completions pd
 	fi
 else
-	unset $(declare -F | awk "\$3~\"^_proot-distro\" {printf(\"%s\n\", \$3)}")
+	unset $(declare -F | awk "\$3~\"^_proot-distro_completions\" {printf(\"%s\n\", \$3)}")
 fi
