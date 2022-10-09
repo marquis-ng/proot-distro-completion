@@ -15,6 +15,10 @@ _proot-distro_completions_filter() {
 	set -- "${COMP_WORDS[@]:1:$COMP_CWORD-1}"
 	while [ "$#" != 0 ]; do
 		case "$1" in
+			--)
+				words=""
+				break
+				;;
 			--*)
 				if echo "$1" | grep -qEx -- "$optargs"; then
 					if [ -n "$2" ]; then
@@ -24,6 +28,7 @@ _proot-distro_completions_filter() {
 					fi
 				fi
 				;;
+
 			*)
 				((++optcount))
 				;;
@@ -83,7 +88,7 @@ _proot-distro_completions() {
 			while read -r; do
 				COMPREPLY+=("$REPLY")
 			done < <(compgen -A file -- "$cur")
-		;;
+			;;
 
 		install*--override-alias)
 			while read -r; do
