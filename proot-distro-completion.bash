@@ -16,9 +16,9 @@ _proot-distro_completions_filter() {
 	while [ "$#" != 0 ]; do
 		case "$1" in
 			--)
-				words=""
-				break
+				return 0
 				;;
+
 			--*)
 				if echo "$1" | grep -qEx -- "$optargs"; then
 					if [ -n "$2" ]; then
