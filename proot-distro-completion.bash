@@ -43,8 +43,7 @@ _proot-distro_completions_filter() {
 
 _proot-distro_completions_list() {
 	ls /data/data/com.termux/files/usr/etc/proot-distro 2>/dev/null |\
-	grep -v "distro.sh.sample" |\
-	sed "s/\.sh$//g" | tr "\n" " "
+	grep -v "^distro.sh.sample$" | sed "s/\.sh$//g" | sed "s/\.override$//g"
 }
 
 _proot-distro_completions_list_installed() {
