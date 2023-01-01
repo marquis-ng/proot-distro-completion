@@ -108,6 +108,10 @@ _proot-distro_completions() {
 			done < <(compgen -A file -A directory -- "$cur")
 			;;
 
+		login*--kernel)
+			:
+			;;
+
 		-h*|--help*|help*|list*)
 			:
 			;;
@@ -127,7 +131,7 @@ _proot-distro_completions() {
 		login*)
 			while read -r; do
 				COMPREPLY+=("$REPLY")
-			done < <(compgen -W "$(_proot-distro_completions_filter "--help --user --fix-low-ports --isolated --termux-home --shared-tmp --bind --no-link2symlink --no-sysvipc --no-kill-on-exit $(_proot-distro_completions_list_installed)" "--user|--bind")" -- "$cur")
+			done < <(compgen -W "$(_proot-distro_completions_filter "--help --user --fix-low-ports --isolated --termux-home --shared-tmp --bind --no-link2symlink --no-sysvipc --no-kill-on-exit --kernel $(_proot-distro_completions_list_installed)" "--user|--bind|--kernel")" -- "$cur")
 			;;
 
 		remove*)
